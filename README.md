@@ -1,13 +1,14 @@
 # Vagrant-based Lab: Anycast via BGP Routing (using OpenBSD)
 
 ## Topology
-
+```
      user
       |
   r2--r1--r3
   |        |
   |        |
   s1      s2
+```
 
 BGP Routers: r1-r3
 Servers:     s1,s2
