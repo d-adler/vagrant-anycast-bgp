@@ -1,7 +1,7 @@
 tee /etc/bgpd.conf <<EOF
 AS 65003
-holdtime 10
 connect-retry 5
+holdtime 10
 log updates
 router-id 10.20.3.13
 network 10.20.3/24
