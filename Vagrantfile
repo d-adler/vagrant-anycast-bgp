@@ -40,32 +40,37 @@ Vagrant.configure(2) do |config|
   config.vm.define "s1" do |config|
     config.vm.hostname = "s1"
     config.vm.network "private_network", :ip => "10.20.2.100",   :netmask => "255.255.255.0"
-    config.vm.network "private_network", :ip => "10.30.1.3",   :netmask => "255.255.255.0", :virtualbox__intnet => "r2"
-    
-    config.vm.box = "ubuntu/trusty64"
-    #config.vm.provision "shell", inline: "route delete default"
-    #config.vm.provision "shell", inline: "route add default gw 10.20.2.12"
-    
-    config.vm.provision "bgp", type: "shell", path: "s1.sh"
-    
-    #config.vm.guest = :openbsd
-    #config.vm.provision "shell", inline: "route delete default"
-    #config.vm.provision "shell", inline: "route add default 10.20.2.12"
+    config.vm.network "private_network", :ip => "10.30.1.4",   :netmask => "255.255.255.0", :virtualbox__intnet => "r2"
+    config.vm.guest = :openbsd
+    config.vm.provision "carp", type: "shell", path: "carp1.sh"
+    config.vm.provision "shell", inline: "route delete default"
+    config.vm.provision "shell", inline: "route add default 10.20.2.12"
+    config.vm.provider "virtualbox" do |v|
+      v.customize ["modifyvm", :id, "--nicpromisc3", 'allow-all']
+    end
   end 
   
   config.vm.define "s2" do |config|
-    config.vm.hostname = "s2"
+    config.vm.hostname = "s1"
+    config.vm.network "private_network", :ip => "10.20.2.101",   :netmask => "255.255.255.0"
+    config.vm.network "private_network", :ip => "10.30.1.5",   :netmask => "255.255.255.0", :virtualbox__intnet => "r2"
+    config.vm.guest = :openbsd
+    config.vm.provision "carp", type: "shell", path: "carp1.sh"
+    config.vm.provision "shell", inline: "route delete default"
+    config.vm.provision "shell", inline: "route add default 10.20.2.12"
+    config.vm.provider "virtualbox" do |v|
+      v.customize ["modifyvm", :id, "--nicpromisc3", 'allow-all']
+    end
+  end 
+  
+  config.vm.define "s3" do |config|
+    config.vm.hostname = "s3"
     config.vm.network "private_network", :ip => "10.20.3.100",   :netmask => "255.255.255.0"
     config.vm.network "private_network", :ip => "10.30.1.3",   :netmask => "255.255.255.0", :virtualbox__intnet => "r3"
    
-    config.vm.box = "ubuntu/trusty64"
-    #config.vm.provision "shell", inline: "route delete default"
-    #config.vm.provision "shell", inline: "route add default gw 10.20.3.13"
-    config.vm.provision "bgp", type: "shell", path: "s2.sh"
-    
-    # config.vm.guest = :openbsd
-    # config.vm.provision "shell", inline: "route delete default"
-    # config.vm.provision "shell", inline: "route add default 10.20.3.13"
+    config.vm.guest = :openbsd
+    config.vm.provision "shell", inline: "route delete default"
+    config.vm.provision "shell", inline: "route add default 10.20.3.13"
   end 
   
   config.vm.define "user" do |config|

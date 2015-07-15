@@ -1,17 +1,19 @@
-# Vagrant-based Lab: Anycast via BGP Routing (using OpenBSD)
+# Vagrant-based Lab: Anycast via BGP Routing (using OpenBSD) + Failover (at one site) via CARP
 
 ## Topology
 ```
-     user
-      |
-  r2--r1--r3
-  |        |
-  |        |
-  s1      s2
+      user
+       |
+   r2--r1--r3
+   |        |
+   |        |
++--+--+     |
+|     |     |
+s1   s2    s3
 ```
 
 BGP Routers: r1-r3
-Servers:     s1,s2
+Servers:     s1/s2 carp, s3
 
 Common IP: 10.30.1.3
 
@@ -28,10 +30,15 @@ Common IP: 10.30.1.3
 
     user $ ping 10.30.1.3
     
+    host $ vagrant suspend s1
+
     host $ vagrant suspend r2
 
-    host $ vagrant suspend r3
-
+    host $ vagrant suspend s2
+ 
     host $ vagrant resume r2
+   
+    host $ vagrant resume s2
+
 
 
